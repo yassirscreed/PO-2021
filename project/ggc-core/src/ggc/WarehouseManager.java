@@ -1,16 +1,6 @@
 package ggc;
 
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutput;
-import java.io.ObjectOutputStream;
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-
+import java.io.*;
 import ggc.exceptions.*;
 
 //FIXME import classes (cannot import from pt.tecnico or ggc.app)
@@ -43,6 +33,22 @@ public class WarehouseManager {
   public double getBalance() {
     return _warehouse.getBalance();
   }
+
+
+// Partner
+
+public void registerPartner(String id, String name, String address){
+        _warehouse.registerPartner(id, name, address);
+}
+
+public boolean idExists(String id){
+      return _warehouse.idExists(id);
+}
+
+
+
+
+
 
   /**
    * @@throws IOException

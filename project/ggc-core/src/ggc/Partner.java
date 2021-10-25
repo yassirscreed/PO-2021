@@ -14,9 +14,9 @@ public class Partner {
 
     private int _points = 0;
 
-    private List<Transaction> _transactions = new ArrayList<Transaction>();
+   // private List<Transaction> _transactions = new ArrayList<Transaction>();
 
-    private Status _status = new NormalStatus();
+    private StatusState _status = new NormalStatus();
 
     public Partner(String id, String name, String address) {
         _id = id;
@@ -45,21 +45,24 @@ public class Partner {
     }
 
     // Status
-    public void changeStatus(Status status) {
+    public void changeStatus(StatusState status) {
         _status = status;
     }
 
     public void updateStatus() {
         if (_points > 2000)
-            _status.changeStatus(new SelectionStatus());
+            this.changeStatus(new SelectionStatus());
         else if (_points > 25000)
-            _status.changeStatus(new EliteStatus());
+            this.changeStatus(new EliteStatus());
     }
 
-    public Status getStatus() {
+    public StatusState getStatus() {
         return _status;
     }
 
     // public int statusPrice(){}
     // public int buy(){}
+
+    
+
 }
