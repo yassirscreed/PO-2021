@@ -11,7 +11,7 @@ public class EliteStatus implements StatusState {
 
     @Override
         public void nextStatus(Partner partner) throws MaxStatusException{
-            throw new MaxStatusException("Partner already at max status.")
+            throw new MaxStatusException("Partner already at max status.");
         }
 
     /**

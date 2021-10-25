@@ -1,8 +1,7 @@
 package ggc;
 
 import java.io.Serializable;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 import java.io.IOException;
 import ggc.exceptions.BadEntryException;
 
@@ -24,12 +23,13 @@ public class Warehouse implements Serializable {
 
   private double _balance = 0;
 
-  /**
-   * private Map<String, Partner> _partners = new TreeMap<String, Partner>();
-   * private Map<String, Product> _products = new TreeMap<String, Product>();
-   * private Map<Integer, Transaction> _transactions = new TreeMap<Integer,
-   * Transaction>();
-   */
+  
+  private Map<String, Partner> _partners = new TreeMap<String, Partner>();
+   /** 
+  * private Map<String, Product> _products = new TreeMap<String, Product>();
+  * private Map<Integer, Transaction> _transactions = new TreeMap<Integer,
+  * Transaction>();
+  */
 
   // Date methods
   public int getDate() {
@@ -39,6 +39,21 @@ public class Warehouse implements Serializable {
   public void daysToAdvance(int days) {
     _date += days;
   }
+
+ // Partner
+
+  public void registerPartner(String id, String name, String address){
+    Partner partner = new Partner(id, name, address);
+    _partners.put(id, partner);
+
+  }
+
+  public boolean idExists(String id){
+    return _partners.containsKey(id);
+  }
+  
+
+
 
   // Balance
 
