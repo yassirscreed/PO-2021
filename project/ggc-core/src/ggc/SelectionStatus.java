@@ -1,6 +1,8 @@
 package ggc;
 
-public class SelectionStatus implements StatusState {
+import java.io.Serializable;
+
+public class SelectionStatus implements StatusState, Serializable {
 
     @Override
     public void previousStatus(Partner partner) {

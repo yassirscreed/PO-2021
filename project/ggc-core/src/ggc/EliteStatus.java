@@ -1,8 +1,10 @@
 package ggc;
 
+import java.io.Serializable;
+
 import ggc.exceptions.MaxStatusException;
 
-public class EliteStatus implements StatusState {
+public class EliteStatus implements StatusState, Serializable {
 
     @Override
     public void previousStatus(Partner partner) {

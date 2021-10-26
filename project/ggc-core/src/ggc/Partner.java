@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.ArrayList;
 
-public class Partner {
+public class Partner implements Serializable{
 
     private String _id;
 
