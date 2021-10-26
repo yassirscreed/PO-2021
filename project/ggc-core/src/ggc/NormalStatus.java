@@ -5,7 +5,7 @@ import ggc.exceptions.MinStatusException;
 public class NormalStatus implements StatusState {
 
     @Override
-    public void previousStatus(Partner partner) throws MinStatusException{
+    public void previousStatus(Partner partner) throws MinStatusException {
         throw new MinStatusException("Partner already at bottom status.");
     }
 

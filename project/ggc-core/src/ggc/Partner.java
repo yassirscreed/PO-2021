@@ -14,7 +14,7 @@ public class Partner {
 
     private int _points = 0;
 
-   // private List<Transaction> _transactions = new ArrayList<Transaction>();
+    // private List<Transaction> _transactions = new ArrayList<Transaction>();
 
     private StatusState _status = new NormalStatus();
 
@@ -63,6 +63,8 @@ public class Partner {
     // public int statusPrice(){}
     // public int buy(){}
 
-    
-
+    public String toString() {
+        return getId() + "|" + getName() + "|" + getAddress() + "|" + getStatus().getStatus() + "|" + getPoints() + "|"
+                + 0 + "|" + 0 + "|" + 0;
+    }
 }

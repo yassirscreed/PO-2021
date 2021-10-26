@@ -1,6 +1,8 @@
 package ggc;
 
 import java.io.*;
+import java.util.Collection;
+
 import ggc.exceptions.*;
 
 //FIXME import classes (cannot import from pt.tecnico or ggc.app)
@@ -34,21 +36,23 @@ public class WarehouseManager {
     return _warehouse.getBalance();
   }
 
+  // Partner
 
-// Partner
+  public void registerPartner(String id, String name, String address) {
+    _warehouse.registerPartner(id, name, address);
+  }
 
-public void registerPartner(String id, String name, String address){
-        _warehouse.registerPartner(id, name, address);
-}
+  public boolean idExists(String id) {
+    return _warehouse.idExists(id);
+  }
 
-public boolean idExists(String id){
-      return _warehouse.idExists(id);
-}
+  public String showPartner(String id) {
+    return _warehouse.showPartner(id);
+  }
 
-
-
-
-
+  public Collection<Partner> getPartners() {
+    return _warehouse.getPartners();
+  }
 
   /**
    * @@throws IOException
