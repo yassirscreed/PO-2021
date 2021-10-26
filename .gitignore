@@ -27,3 +27,9 @@ hs_err_pid*
 
 project/ggc-app/Makefile
 po-uilib/Makefile
+project/ggc-app/ggc-app.jar
+project/ggc-app/src/ggc/app/main/DoShowGlobalBalance.class
+project/ggc-core/ggc-core.jar
+project/ggc-app/src/ggc/app/partners/DoRegisterPartner.class
+project/ggc-core/src/ggc/Warehouse.class
+project/ggc-core/src/ggc/WarehouseManager.class
