@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.*;
 import java.io.IOException;
 import ggc.exceptions.BadEntryException;
+import ggc.exceptions.DuplicatePartnerException;
 
 // FIXME import classes (cannot import from pt.tecnico or ggc.app)
 
@@ -40,10 +41,14 @@ public class Warehouse implements Serializable {
 
   // Partner
 
-  public void registerPartner(String id, String name, String address) {
-    Partner partner = new Partner(id, name, address);
-    _partners.put(id, partner);
+  public void registerPartner(String id, String name, String address) throws DuplicatePartnerException {
+    Partner partner = _partners.get(id);
+    if (partner != null) {
+      throw new DuplicatePartnerException(id);
+    }
 
+    Partner partner2 = new Partner(id, name, address);
+    _partners.put(id, partner2);
   }
 
   public boolean idExists(String id) {

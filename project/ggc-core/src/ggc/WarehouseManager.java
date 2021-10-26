@@ -20,6 +20,10 @@ public class WarehouseManager {
   // FIXME define constructor(s)
   // FIXME define other methods
 
+  public String getFilename() {
+    return _filename;
+  }
+
   // Date
   public int getDate() {
     return _warehouse.getDate();
@@ -38,7 +42,7 @@ public class WarehouseManager {
 
   // Partner
 
-  public void registerPartner(String id, String name, String address) {
+  public void registerPartner(String id, String name, String address) throws DuplicatePartnerException {
     _warehouse.registerPartner(id, name, address);
   }
 
@@ -64,6 +68,7 @@ public class WarehouseManager {
     ObjectOutputStream ous = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(_filename)));
     ous.writeObject(_warehouse);
     ous.close();
+
   }
 
   /**
@@ -88,11 +93,10 @@ public class WarehouseManager {
       _filename = filename;
       _warehouse = (Warehouse) ois.readObject();
       ois.close();
-    } catch (IOException e) {
-      e.printStackTrace();
-    } catch (ClassNotFoundException e) {
-      e.printStackTrace();
+    } catch (IOException | ClassNotFoundException e) {
+      throw new UnavailableFileException(filename);
     }
+
   }
 
   /**

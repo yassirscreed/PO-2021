@@ -4,6 +4,7 @@ import pt.tecnico.uilib.menus.Command;
 import pt.tecnico.uilib.menus.CommandException;
 import ggc.WarehouseManager;
 import ggc.app.exceptions.DuplicatePartnerKeyException;
+import ggc.exceptions.DuplicatePartnerException;
 //FIXME import classes
 
 /**
@@ -13,7 +14,7 @@ class DoRegisterPartner extends Command<WarehouseManager> {
 
   DoRegisterPartner(WarehouseManager receiver) {
     super(Label.REGISTER_PARTNER, receiver);
-    //FIXME add command fields
+    // FIXME add command fields
     addStringField("id", Prompt.partnerKey());
     addStringField("name", Prompt.partnerName());
     addStringField("address", Prompt.partnerAddress());
@@ -22,12 +23,12 @@ class DoRegisterPartner extends Command<WarehouseManager> {
 
   @Override
   public void execute() throws CommandException {
-    //FIXME implement command
-    if(_receiver.idExists(stringField("id")))
-        throw new DuplicatePartnerKeyException(stringField("id"));
-    else  
-        _receiver.registerPartner(stringField("id"), stringField("name"), stringField("address"));  
-
+    // FIXME implement command
+    try {
+      _receiver.registerPartner(stringField("id"), stringField("name"), stringField("address"));
+    } catch (DuplicatePartnerException e) {
+      throw new DuplicatePartnerKeyException(e.getPartnerKey());
+    }
   }
 
 }
