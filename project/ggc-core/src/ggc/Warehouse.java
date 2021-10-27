@@ -2,9 +2,12 @@ package ggc;
 
 import java.io.Serializable;
 import java.util.*;
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
 import ggc.exceptions.BadEntryException;
 import ggc.exceptions.DuplicatePartnerException;
+import java.util.regex.Pattern;
 
 // FIXME import classes (cannot import from pt.tecnico or ggc.app)
 
@@ -26,7 +29,7 @@ public class Warehouse implements Serializable {
 
   private int _transactionID = 0;
 
-  private Map<String, Partner> _partners = new TreeMap<String, Partner>();
+  private Map<String, Partner> _partners = new TreeMap<String, Partner>(String.CASE_INSENSITIVE_ORDER);
   private Map<String, Product> _products = new TreeMap<String, Product>();
   private Map<Integer, Transaction> _transactions = new TreeMap<Integer, Transaction>();
 
@@ -81,8 +84,42 @@ public class Warehouse implements Serializable {
    * @throws IOException
    * @throws BadEntryException
    */
-  void importFile(String txtfile) throws IOException, BadEntryException /* FIXME maybe other exceptions */ {
+  void importFile(String txtfile)
+      throws IOException, BadEntryException, DuplicatePartnerException /* FIXME maybe other exceptions */ {
     // FIXME implement method
+    try {
+      BufferedReader in = new BufferedReader(new FileReader(txtfile));
+      String s;
+      while ((s = in.readLine()) != null) {
+        String line = new String(s.getBytes(), "UTF-8");
+
+        String[] fields = line.split("\\|");
+        registerFromFields(fields);
+      }
+      in.close();
+    } catch (IOException | BadEntryException | DuplicatePartnerException e) {
+      e.printStackTrace();
+    }
+  }
+
+  void registerFromFields(String[] fields) throws IOException, BadEntryException, DuplicatePartnerException {
+    Pattern partnerPattern = Pattern.compile("^(PARTNER)");
+    // Pattern batch_sPattern = Pattern.compile("^(BATCH_S)") ainda n foi
+    // implementado
+    // Pattern batch_mPattern = Pattern.compile("^(BATCH_M)")
+    if (partnerPattern.matcher(fields[0]).matches()) {
+      registerPartner(fields[1], fields[2], fields[3]);
+    }
+    /**
+     * else if(batch_sPattern.matcher(field[0]).matches()){
+     * 
+     * } else if(batch_mPattern.matcher(field[0]).matches()){
+     * 
+     * }
+     */
+    else
+      throw new BadEntryException(fields[0]);
+
   }
 
 }
