@@ -4,34 +4,38 @@ import java.io.Serializable;
 
 public class Product implements Serializable {
 
-    private String _prodname;
-    private int _stock;
-    private double _price;
+    private String _prodID;
+    private int _stocktotal;
+    private double _maxprice;
 
-    public Product(String name, double price, int stock) {
-        _prodname = name;
-        _price = price;
-        _stock = stock;
+    public Product(String id, double maxprice, int stock) {
+        _prodID = id;
+        _maxprice = maxprice;
+        _stocktotal = stock;
     }
 
-    public int getStock() {
-        return _stock;
+    public int getStockTotal() {
+        return _stocktotal;
     }
 
     public void addStock(int stock) {
-        _stock += stock;
+        _stocktotal += stock;
     }
 
     public String getProdName() {
-        return _prodname;
+        return _prodID;
     }
 
     public void setPrice(double newprice) {
-        _price = newprice;
+        _maxprice = newprice;
     }
 
     public double getPrice() {
-        return _price;
+        return _maxprice;
     }
 
+    @Override
+    public String toString(){
+        return getProdName() + "|" + getPrice() + "|" + getStockTotal() + "\n";
+    }
 }
