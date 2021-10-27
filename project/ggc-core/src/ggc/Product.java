@@ -35,7 +35,7 @@ public class Product implements Serializable {
     }
 
     @Override
-    public String toString(){
-        return getProdName() + "|" + getPrice() + "|" + getStockTotal() + "\n";
+    public String toString() {
+        return getProdName() + "|" + getPrice() + "|" + getStockTotal();
     }
 }

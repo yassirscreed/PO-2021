@@ -104,9 +104,8 @@ public class Warehouse implements Serializable {
 
   void registerFromFields(String[] fields) throws IOException, BadEntryException, DuplicatePartnerException {
     Pattern partnerPattern = Pattern.compile("^(PARTNER)");
-    // Pattern batch_sPattern = Pattern.compile("^(BATCH_S)") ainda n foi
-    // implementado
-    // Pattern batch_mPattern = Pattern.compile("^(BATCH_M)")
+    // Pattern batch_sPattern = Pattern.compile("^(BATCH_S)");
+    // Pattern batch_mPattern = Pattern.compile("^(BATCH_M)");
     if (partnerPattern.matcher(fields[0]).matches()) {
       registerPartner(fields[1], fields[2], fields[3]);
     }

@@ -17,16 +17,10 @@ import ggc.WarehouseManager;
  */
 class DoSaveFile extends Command<WarehouseManager> {
 
-  private Form _form = new Form();
-
   /** @param receiver */
   DoSaveFile(WarehouseManager receiver) {
     super(Label.SAVE, receiver);
     // FIXME maybe add command fields
-    /**
-     * if (_receiver.getFilename() == "") { addStringField("nome",
-     * Prompt.newSaveAs()); System.out.println(_receiver.getFilename()); }
-     */
   }
 
   @Override
@@ -34,7 +28,7 @@ class DoSaveFile extends Command<WarehouseManager> {
     // FIXME implement command
     try {
       if (_receiver.getFilename() == "") {
-        _receiver.saveAs(_form.requestString(Prompt.newSaveAs()));
+        _receiver.saveAs(Form.requestString(Prompt.newSaveAs()));
       } else
         _receiver.save();
     } catch (MissingFileAssociationException e) {
