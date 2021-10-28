@@ -1,14 +1,15 @@
 package ggc;
 
+import java.lang.Math;
 import java.io.Serializable;
 
-public class Product implements Serializable {
+public abstract class Product implements Serializable {
 
     private String _prodID;
     private int _stocktotal;
-    private double _maxprice;
+    private Double _maxprice;
 
-    public Product(String id, double maxprice, int stock) {
+    public Product(String id, Double maxprice, int stock) {
         _prodID = id;
         _maxprice = maxprice;
         _stocktotal = stock;
@@ -22,11 +23,11 @@ public class Product implements Serializable {
         _stocktotal += stock;
     }
 
-    public String getProdName() {
+    public String getProdID() {
         return _prodID;
     }
 
-    public void setPrice(double newprice) {
+    public void setPrice(Double newprice) {
         _maxprice = newprice;
     }
 
@@ -35,7 +36,7 @@ public class Product implements Serializable {
     }
 
     @Override
-    public String toString(){
-        return getProdName() + "|" + getPrice() + "|" + getStockTotal() + "\n";
+    public String toString() {
+        return getProdID() + "|" + Math.round(getPrice()) + "|" + getStockTotal(); // + "\n";
     }
 }

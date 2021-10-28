@@ -59,20 +59,38 @@ public class WarehouseManager {
   }
 
   // Batches and Products
-  
-  public void registerBatch(String prodID, String partnerID, int quantity, double price){
-    _warehouse.registerBatch(prodID, partnerID, quantity, price);
+
+  public void registerSimpleProduct(String ID, double maxprice, int stock) {
+    _warehouse.registerSimpleProduct(ID, maxprice, stock);
   }
 
-/*  public Collection<Batch> getBatches() {
-    return _warehouse.getBatches();
+  public void registerDerivedProduct(String ID, double maxprice, int stock, double agravamento, String components) {
+    _warehouse.registerDerivedProduct(ID, maxprice, stock, agravamento, components);
   }
-*/
+
+  public String showProducts() {
+    return _warehouse.showProducts();
+  }
+
+  public Product getProduct(String id) {
+    return _warehouse.getProduct(id);
+  }
+
   public Collection<Product> getProducts() {
     return _warehouse.getProducts();
   }
 
+  public void registerBatch(Product product, String partnerID, int quantity, double price) {
+    _warehouse.registerBatch(product, partnerID, quantity, price);
+  }
 
+  public String showBatches() {
+    return _warehouse.showBatches();
+  }
+
+  public Collection<Batch> getBatches() {
+    return _warehouse.getBatches();
+  }
 
   /**
    * @@throws IOException
