@@ -58,6 +58,22 @@ public class WarehouseManager {
     return _warehouse.getPartners();
   }
 
+  // Batches and Products
+  
+  public void registerBatch(String prodID, String partnerID, int quantity, double price){
+    _warehouse.registerBatch(prodID, partnerID, quantity, price);
+  }
+
+/*  public Collection<Batch> getBatches() {
+    return _warehouse.getBatches();
+  }
+*/
+  public Collection<Product> getProducts() {
+    return _warehouse.getProducts();
+  }
+
+
+
   /**
    * @@throws IOException
    * @@throws FileNotFoundException
