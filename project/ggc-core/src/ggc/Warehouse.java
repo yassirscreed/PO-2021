@@ -1,6 +1,7 @@
 package ggc;
 
 import java.io.Serializable;
+import java.text.Collator;
 //import java.sql.BatchUpdateException;
 import java.util.*;
 import java.io.BufferedReader;
@@ -96,14 +97,23 @@ public class Warehouse implements Serializable {
     _products.put(ID, product);
   }
 
+  public String showProduct(Product p) {
+    String s = "";
+    s += p.toString();
+    return s;
+  }
+
   public String showProducts() {
     String s = "";
 
-    for (Map.Entry<String, Product> e : _products.entrySet()) {
-      s += e.getValue().toString();
+    ArrayList<String> prods = new ArrayList<String>(_products.keySet());
+    Collator collator = Collator.getInstance(Locale.getDefault());
+    Collections.sort(prods, collator);
 
+    for (String e : prods) {
+      s += showProduct(_products.get(e)) + "\n";
     }
-    return s;
+    return s.replaceAll("[\n\r]$", "");
   }
 
   public Product getProduct(String id) {
