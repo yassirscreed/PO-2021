@@ -1,8 +1,8 @@
 package ggc;
 
+// Imports.
 import java.io.Serializable;
 import java.text.Collator;
-//import java.sql.BatchUpdateException;
 import java.util.*;
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -10,8 +10,8 @@ import java.io.IOException;
 import ggc.exceptions.BadEntryException;
 import ggc.exceptions.DuplicatePartnerException;
 import java.util.regex.Pattern;
+import ggc.Batch.SortBatches;
 
-// FIXME import classes (cannot import from pt.tecnico or ggc.app)
 
 /**
  * Class Warehouse implements a warehouse.
@@ -21,35 +21,48 @@ public class Warehouse implements Serializable {
   /** Serial number for serialization. */
   private static final long serialVersionUID = 202109192006L;
 
-  // FIXME define attributes
-  // FIXME define contructor(s)
-  // FIXME define methods
-
+  /** Date. */
   private int _date = 0;
 
+  /** Balance of warehouse. */
   private double _balance = 0;
 
-  private int batches = 0;
-  // private int _transactionID = 0;
-
+  /** Partners of warehouse. */
   private Map<String, Partner> _partners = new TreeMap<String, Partner>(String.CASE_INSENSITIVE_ORDER);
+
+  /** Products of warehouse. */
   private Map<String, Product> _products = new TreeMap<String, Product>(String.CASE_INSENSITIVE_ORDER);
-  private Map<Integer, Batch> _batches = new TreeMap<Integer, Batch>();
 
-  // private Map<Integer, Transaction> _transactions = new TreeMap<Integer,
-  // Transaction>();
+  /** Batches of warehouse. */
+  private List<Batch> _batches = new LinkedList<Batch>();
 
-  // Date methods
+  // Date 
+
+  /**
+   * @return the date.
+   */
   public int getDate() {
     return _date;
   }
 
+  /**
+   * @param days to advance.
+   * @return the new date.
+   */
   public void daysToAdvance(int days) {
     _date += days;
   }
 
-  // Partner
+  // Partners
 
+  /**
+   * Register a partner
+   *  
+   * @param int
+   * @param name
+   * @param address
+   * @throws DuplicatePartnerException
+   */
   public void registerPartner(String id, String name, String address) throws DuplicatePartnerException {
     Partner partner = _partners.get(id);
     if (partner != null) {
@@ -60,10 +73,18 @@ public class Warehouse implements Serializable {
     _partners.put(id, partner2);
   }
 
+  /**
+   * @param id of a product
+   * @return a boolean 
+   */
   public boolean idExists(String id) {
     return _partners.containsKey(id);
   }
 
+  /**
+   * @param id
+   * @return 
+   */
   public String showPartner(String id) {
     String s = "";
     Partner partner = _partners.get(id);
@@ -85,17 +106,6 @@ public class Warehouse implements Serializable {
     return _balance;
   }
 
-  // Batch and Products
-
-  public void registerSimpleProduct(String ID, Double maxprice, int stock) {
-    Product product = new SimpleProduct(ID, maxprice, stock);
-    _products.put(ID, product);
-  }
-
-  public void registerDerivedProduct(String ID, Double maxprice, int stock, double agravamento, String components) {
-    Product product = new DerivedProduct(ID, maxprice, stock, agravamento, components);
-    _products.put(ID, product);
-  }
 
   public String showProduct(Product p) {
     String s = "";
@@ -124,24 +134,26 @@ public class Warehouse implements Serializable {
     return Collections.unmodifiableCollection(_products.values());
   }
 
-  public void registerBatch(Product product, String partnerID, int quantity, double price) {
-
+  public void registerBatch(Product product, String partnerID, int quantity, double price){
     Batch batch = new Batch(product, partnerID, quantity, price);
-    _batches.put(batches++, batch);
-  }
-
-  public Collection<Batch> getBatches() {
-    return Collections.unmodifiableCollection(_batches.values());
+    if(_products.get(product.getProdID()) == null){
+      _products.put(product.getProdID(),product);
+    }
+    else{ 
+      if(price > _products.get(product.getProdID()).getPrice())
+        _products.get(product.getProdID()).setPrice(price);
+      _products.get(product.getProdID()).addStock(quantity);
+    }
+    _batches.add(batch);
+    Collections.sort(_batches,new SortBatches());
   }
 
   public String showBatches() {
     String s = "";
-
-    for (Map.Entry<Integer, Batch> e : _batches.entrySet()) {
-      s += e.getValue().toString();
-
+    for (Batch e : _batches) {
+      s += e.toString() + "\n";
     }
-    return s;
+    return s.replaceAll("[\n\r]$", "");
   }
 
   /**
@@ -173,29 +185,24 @@ public class Warehouse implements Serializable {
     Pattern batch_mPattern = Pattern.compile("^(BATCH_M)");
     if (partnerPattern.matcher(fields[0]).matches()) {
       registerPartner(fields[1], fields[2], fields[3]);
+      
     } else if (batch_sPattern.matcher(fields[0]).matches()) {
       String prodID = fields[1];
       Double price = Double.parseDouble(fields[3]);
       int quantity = Integer.parseInt(fields[4]);
-      registerSimpleProduct(prodID, price, quantity);
-      registerBatch(getProduct(prodID), fields[2], quantity, price);
+      SimpleProduct prod = new SimpleProduct(prodID, price, quantity);
+      registerBatch(prod, fields[2], quantity, price);
+
     } else if (batch_mPattern.matcher(fields[0]).matches()) {
       String prodID = fields[1];
       Double price = Double.parseDouble(fields[3]);
       int quantity = Integer.parseInt(fields[4]);
       Double agravamento = Double.parseDouble(fields[5]);
       String receita = fields[6];
-      registerDerivedProduct(prodID, price, quantity, agravamento, receita);
-      registerBatch(getProduct(prodID), fields[2], quantity, price);
+      DerivedProduct prod = new DerivedProduct(prodID, price, quantity, agravamento, receita);
+      registerBatch(prod, fields[2], quantity, price);
 
     }
-    /**
-     * else if(batch_sPattern.matcher(field[0]).matches()){
-     * 
-     * } else if(batch_mPattern.matcher(field[0]).matches()){
-     * 
-     * }
-     */
     else
       throw new BadEntryException(fields[0]);
 

@@ -58,16 +58,6 @@ public class WarehouseManager {
     return _warehouse.getPartners();
   }
 
-  // Batches and Products
-
-  public void registerSimpleProduct(String ID, double maxprice, int stock) {
-    _warehouse.registerSimpleProduct(ID, maxprice, stock);
-  }
-
-  public void registerDerivedProduct(String ID, double maxprice, int stock, double agravamento, String components) {
-    _warehouse.registerDerivedProduct(ID, maxprice, stock, agravamento, components);
-  }
-
   public String showProducts() {
     return _warehouse.showProducts();
   }
@@ -88,9 +78,6 @@ public class WarehouseManager {
     return _warehouse.showBatches();
   }
 
-  public Collection<Batch> getBatches() {
-    return _warehouse.getBatches();
-  }
 
   /**
    * @@throws IOException
