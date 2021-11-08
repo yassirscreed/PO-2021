@@ -15,8 +15,8 @@ public class Buy extends Transaction {
 
     //private int _quantity;
 
-    public Buy(int date, int id, String partnerID) {
-        super(date, id, partnerID);
+    public Buy(int id, String partnerID, String productID, int quantity, int paydate) {
+        super(id, partnerID, productID, quantity, paydate);
     }
 
     /**
