@@ -15,6 +15,8 @@ public class Partner implements Serializable, ProductObserver {
     private String _address;
 
     private int _points = 0;
+    
+    private int _aquisitionValue = 0;
 
     private NotificationDelivery _deliveryMode;
 
@@ -46,6 +48,14 @@ public class Partner implements Serializable, ProductObserver {
         return _points;
     }
 
+    public int getAquisitionValue(){
+        return _aquisitionValue;
+    }
+
+    public void addAquisitionValue(int price){
+        _aquisitionValue += price;
+    }
+    
     public void changePoints(int points) {
         _points = points;
     }
@@ -86,6 +96,6 @@ public class Partner implements Serializable, ProductObserver {
 
     public String toString() {
         return getId() + "|" + getName() + "|" + getAddress() + "|" + getStatus().getStatus() + "|" + getPoints() + "|"
-                + 0 + "|" + 0 + "|" + 0;
+                + getAquisitionValue() + "|" + 0 + "|" + 0;
     }
 }
