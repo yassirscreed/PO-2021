@@ -7,8 +7,8 @@ import java.util.*;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import ggc.exceptions.BadEntryException;
-import ggc.exceptions.DuplicatePartnerException;
+import ggc.exceptions.*;
+
 import java.util.regex.Pattern;
 import ggc.Batch.SortBatches;
 
@@ -70,6 +70,9 @@ public class Warehouse implements Serializable {
 
     Partner partner2 = new Partner(id, name, address);
     _partners.put(id, partner2);
+    for (Product product : _products.values()) {
+      product.registerObserver(partner2);
+    }
   }
 
   /**
@@ -94,9 +97,13 @@ public class Warehouse implements Serializable {
     String s = "";
     Partner partner = _partners.get(id);
 
-    s += partner.toString();// + "\n";
+    s += partner.toString();
 
-    // notification print missing
+    for (Notification n : partner.getPartnerNotifications()) {
+      s += "\n" + n.toString();
+    }
+
+    partner.wipeNotifications();
 
     return s;
   }
@@ -107,6 +114,11 @@ public class Warehouse implements Serializable {
    */
   public Collection<Partner> getPartners() {
     return Collections.unmodifiableCollection(_partners.values());
+  }
+
+  public void toggleNotifications(String partnerID, String prodID)
+      throws UnknownPartnerIDException, UnknownProductIDException {
+    _products.get(prodID).toggleNotifications(_partners.get(partnerID));
   }
 
   // Balance
@@ -154,6 +166,10 @@ public class Warehouse implements Serializable {
    */
   public Product getProduct(String id) {
     return _products.get(id);
+  }
+
+  public boolean productExists(String id) {
+    return _products.containsKey(id);
   }
 
   /**

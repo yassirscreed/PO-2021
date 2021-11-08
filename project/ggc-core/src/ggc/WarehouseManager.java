@@ -58,12 +58,23 @@ public class WarehouseManager {
     return _warehouse.getPartners();
   }
 
+  public void toggleNotifications(String partnerID, String prodID)
+      throws UnknownPartnerIDException, UnknownProductIDException {
+    _warehouse.toggleNotifications(partnerID, prodID);
+  }
+
+  // Products and Batches
+
   public String showProducts() {
     return _warehouse.showProducts();
   }
 
   public Product getProduct(String id) {
     return _warehouse.getProduct(id);
+  }
+
+  public boolean productExists(String id) {
+    return _warehouse.productExists(id);
   }
 
   public Collection<Product> getProducts() {
@@ -77,7 +88,6 @@ public class WarehouseManager {
   public String showBatches() {
     return _warehouse.showBatches();
   }
-
 
   /**
    * @@throws IOException

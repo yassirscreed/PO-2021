@@ -3,8 +3,10 @@ package ggc;
 import java.io.Serializable;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 
-public class Partner implements Serializable{
+public class Partner implements Serializable, ProductObserver {
 
     private String _id;
 
@@ -13,6 +15,10 @@ public class Partner implements Serializable{
     private String _address;
 
     private int _points = 0;
+
+    private NotificationDelivery _deliveryMode;
+
+    private List<Notification> _notifications = new ArrayList<Notification>();
 
     // private List<Transaction> _transactions = new ArrayList<Transaction>();
 
@@ -62,6 +68,21 @@ public class Partner implements Serializable{
 
     // public int statusPrice(){}
     // public int buy(){}
+
+    // Notifications
+
+    public Collection<Notification> getPartnerNotifications() {
+        return Collections.unmodifiableCollection(_notifications);
+    }
+
+    public void wipeNotifications() {
+        _notifications = new ArrayList<Notification>();
+    }
+
+    @Override
+    public void update(String occasion, String pID, Double pPrice) {
+        _notifications.add(_deliveryMode.deliverNotification(occasion, pID, pPrice));
+    }
 
     public String toString() {
         return getId() + "|" + getName() + "|" + getAddress() + "|" + getStatus().getStatus() + "|" + getPoints() + "|"
