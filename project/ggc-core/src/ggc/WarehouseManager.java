@@ -53,6 +53,10 @@ public class WarehouseManager {
   public String showPartner(String id) {
     return _warehouse.showPartner(id);
   }
+  
+  public Partner getPartner(String id){
+    return _warehouse.getPartner(id);
+  }
 
   public Collection<Partner> getPartners() {
     return _warehouse.getPartners();
@@ -87,6 +91,22 @@ public class WarehouseManager {
 
   public String showBatches() {
     return _warehouse.showBatches();
+  }
+  
+  public void registerAcquisition(String partnerID, String prodID, double price, int quantity){
+    _warehouse.registerAcquisition(partnerID, prodID, price, quantity);
+  }
+
+  public Collection<Transaction> getTransactions() {
+    return _warehouse.getTransactions();
+  }
+
+  public String lookupProductBatchesUnderGivenPrice(double priceLimit){
+    return _warehouse.lookupProductBatchesUnderGivenPrice(priceLimit);
+  }
+
+  public String lookupPaymentsByPartner(String partnerID){
+    return _warehouse.lookupPaymentsByPartner(partnerID);
   }
 
   /**
