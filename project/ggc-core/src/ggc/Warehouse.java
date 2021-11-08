@@ -25,6 +25,9 @@ public class Warehouse implements Serializable {
 
   /** Balance of warehouse. */
   private double _balance = 0;
+  
+  /** Number of transactions */
+  private int _numtrans = 0;
 
   /** Partners of warehouse. */
   private Map<String, Partner> _partners = new TreeMap<String, Partner>(String.CASE_INSENSITIVE_ORDER);
