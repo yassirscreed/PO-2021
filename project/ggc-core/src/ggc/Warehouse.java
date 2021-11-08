@@ -34,6 +34,9 @@ public class Warehouse implements Serializable {
 
   /** Batches of warehouse. */
   private List<Batch> _batches = new LinkedList<Batch>();
+  
+  /** Transactions of warehouse. */
+  private Map<Integer, Transaction> _transactions = new TreeMap<Integer, Transaction>();
 
   // Date
 
@@ -85,7 +88,16 @@ public class Warehouse implements Serializable {
   public boolean idExists(String id) {
     return _partners.containsKey(id);
   }
-
+  
+  /**
+   * 
+   * @param id
+   * @returns a specified Partner
+   */
+  public Partner getPartner(String id){
+    return _partners.get(id);
+  }
+  
   /**
    * 
    * Returns a single string containing Partner information
@@ -212,7 +224,43 @@ public class Warehouse implements Serializable {
     }
     return s.replaceAll("[\n\r]$", "");
   }
+  
+  // Transactions
 
+  public void registerAcquisition(String partnerID, String prodID, double price, int quantity){
+    int payvalue = (int)Math.round(price) * quantity;
+    Acquisition acquisition = new Acquisition(_numtrans, partnerID, prodID, quantity, _date, payvalue);
+    getPartner(partnerID).addAquisitionValue(payvalue);
+    SimpleProduct product = new SimpleProduct(prodID, price, quantity);
+    registerBatch(product, partnerID, quantity, price);
+    _transactions.put(_numtrans, acquisition);
+    _numtrans +=1;
+  }
+
+  public Collection<Transaction> getTransactions() {
+    return Collections.unmodifiableCollection(_transactions.values());
+  }
+
+  // Lookups
+
+  public String lookupProductBatchesUnderGivenPrice(double priceLimit){
+    String s = "";
+    for (Batch e : _batches) {
+      if (e.getPrice() < priceLimit)
+        s += e.toString() + "\n";
+    }
+    return s.replaceAll("[\n\r]$", "");
+  }
+
+  public String lookupPaymentsByPartner(String partnerID){
+    String s = "";
+    for (Transaction trans : getTransactions()) {
+      if (trans.getPartnerID().equals(partnerID))
+        s += trans.toString() + "\n";
+    }
+    return s.replaceAll("[\n\r]$", "");
+  }
+  
   /**
    * @param txtfile filename to be loaded.
    * @throws IOException
