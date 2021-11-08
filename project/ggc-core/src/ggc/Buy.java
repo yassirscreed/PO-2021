@@ -11,9 +11,9 @@ public class Buy extends Transaction {
      */
 
     // preço total a pagar
-    private double _pricePay = 0;
+    //private double _pricePay = 0;
 
-    private int _quantity;
+    //private int _quantity;
 
     public Buy(int date, int id, String partnerID) {
         super(date, id, partnerID);
