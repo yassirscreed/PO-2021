@@ -25,7 +25,7 @@ public class Warehouse implements Serializable {
 
   /** Balance of warehouse. */
   private double _balance = 0;
-  
+
   /** Number of transactions */
   private int _numtrans = 0;
 
@@ -37,7 +37,7 @@ public class Warehouse implements Serializable {
 
   /** Batches of warehouse. */
   private List<Batch> _batches = new LinkedList<Batch>();
-  
+
   /** Transactions of warehouse. */
   private Map<Integer, Transaction> _transactions = new TreeMap<Integer, Transaction>();
 
@@ -91,16 +91,16 @@ public class Warehouse implements Serializable {
   public boolean idExists(String id) {
     return _partners.containsKey(id);
   }
-  
+
   /**
    * 
    * @param id
    * @returns a specified Partner
    */
-  public Partner getPartner(String id){
+  public Partner getPartner(String id) {
     return _partners.get(id);
   }
-  
+
   /**
    * 
    * Returns a single string containing Partner information
@@ -222,22 +222,62 @@ public class Warehouse implements Serializable {
    */
   public String showBatches() {
     String s = "";
-    for (Batch e : _batches) {
+    List<Batch> _newBatchSort = _batches;
+    Collections.sort(_newBatchSort, new Comparator<Batch>() {
+      public int compare(Batch p1, Batch p2) {
+        return p1.getProd().getProdID().compareToIgnoreCase(p2.getProd().getProdID());
+      }
+    });
+    for (Batch e : _newBatchSort) {
       s += e.toString() + "\n";
     }
     return s.replaceAll("[\n\r]$", "");
   }
-  
+
+  public String showBatchesByPartner(String partnerID) throws UnknownPartnerIDException {
+    if (_partners.containsKey(partnerID)) {
+      String s = "";
+      List<Batch> _BatchPartnerSort = new ArrayList<Batch>();
+      for (Batch e : _batches) {
+        if (e.getPartnerID().equals(partnerID)) {
+          _BatchPartnerSort.add(e);
+        }
+      }
+      for (Batch e : _BatchPartnerSort) {
+        s += e.toString() + "\n";
+      }
+      return s.replaceAll("[\n\r]$", "");
+    } else
+      throw new UnknownPartnerIDException(partnerID);
+  }
+
+  public String showBatchesByProduct(String productID) throws UnknownProductIDException {
+    if (_products.containsKey(productID)) {
+      String s = "";
+      List<Batch> _BatchProductSort = new ArrayList<Batch>();
+      for (Batch e : _batches) {
+        if (e.getProd().getProdID().equals(productID)) {
+          _BatchProductSort.add(e);
+        }
+      }
+      for (Batch e : _BatchProductSort) {
+        s += e.toString() + "\n";
+      }
+      return s.replaceAll("[\n\r]$", "");
+    } else
+      throw new UnknownProductIDException(productID);
+  }
+
   // Transactions
 
-  public void registerAcquisition(String partnerID, String prodID, double price, int quantity){
-    int payvalue = (int)Math.round(price) * quantity;
+  public void registerAcquisition(String partnerID, String prodID, double price, int quantity) {
+    int payvalue = (int) Math.round(price) * quantity;
     Acquisition acquisition = new Acquisition(_numtrans, partnerID, prodID, quantity, _date, payvalue);
     getPartner(partnerID).addAquisitionValue(payvalue);
     SimpleProduct product = new SimpleProduct(prodID, price, quantity);
     registerBatch(product, partnerID, quantity, price);
     _transactions.put(_numtrans, acquisition);
-    _numtrans +=1;
+    _numtrans += 1;
   }
 
   public Collection<Transaction> getTransactions() {
@@ -246,7 +286,7 @@ public class Warehouse implements Serializable {
 
   // Lookups
 
-  public String lookupProductBatchesUnderGivenPrice(double priceLimit){
+  public String lookupProductBatchesUnderGivenPrice(double priceLimit) {
     String s = "";
     for (Batch e : _batches) {
       if (e.getPrice() < priceLimit)
@@ -255,7 +295,7 @@ public class Warehouse implements Serializable {
     return s.replaceAll("[\n\r]$", "");
   }
 
-  public String lookupPaymentsByPartner(String partnerID){
+  public String lookupPaymentsByPartner(String partnerID) {
     String s = "";
     for (Transaction trans : getTransactions()) {
       if (trans.getPartnerID().equals(partnerID))
@@ -263,7 +303,7 @@ public class Warehouse implements Serializable {
     }
     return s.replaceAll("[\n\r]$", "");
   }
-  
+
   /**
    * @param txtfile filename to be loaded.
    * @throws IOException
