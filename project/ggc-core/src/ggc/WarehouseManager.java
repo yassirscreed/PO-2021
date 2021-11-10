@@ -108,6 +108,14 @@ public class WarehouseManager {
   public Collection<Transaction> getTransactions() {
     return _warehouse.getTransactions();
   }
+  
+   public boolean transIdExists(int id) {
+    return _warehouse.transIdExists(id);
+  }
+
+  public String showTransaction(int id){
+    return _warehouse.showTransaction(id);
+  }
 
   public String lookupProductBatchesUnderGivenPrice(double priceLimit) {
     return _warehouse.lookupProductBatchesUnderGivenPrice(priceLimit);
