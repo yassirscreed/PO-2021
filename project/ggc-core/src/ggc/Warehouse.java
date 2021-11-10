@@ -283,6 +283,21 @@ public class Warehouse implements Serializable {
   public Collection<Transaction> getTransactions() {
     return Collections.unmodifiableCollection(_transactions.values());
   }
+  
+   /**
+   * 
+   * Verifies if a transaction id already exists in _transactions
+   * 
+   * @param id of a transaction
+   * @return a boolean
+   */
+  public boolean transIdExists(int id) {
+    return _transactions.containsKey(id);
+  }
+
+  public String showTransaction(int id){
+    return _transactions.get(id).toString();
+  }
 
   // Lookups
 
