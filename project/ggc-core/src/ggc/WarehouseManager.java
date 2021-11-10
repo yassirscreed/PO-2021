@@ -50,7 +50,7 @@ public class WarehouseManager {
     return _warehouse.idExists(id);
   }
 
-  public String showPartner(String id) {
+  public String showPartner(String id) throws UnknownPartnerIDException{
     return _warehouse.showPartner(id);
   }
 
@@ -81,6 +81,10 @@ public class WarehouseManager {
     return _warehouse.productExists(id);
   }
 
+  public String showPartnerAcquisitions(String partnerID) throws UnknownPartnerIDException{
+    return _warehouse.showPartnerAcquisitions(partnerID);
+  }
+
   public Collection<Product> getProducts() {
     return _warehouse.getProducts();
   }
@@ -101,7 +105,7 @@ public class WarehouseManager {
     return _warehouse.showBatchesByProduct(productID);
   }
 
-  public void registerAcquisition(String partnerID, String prodID, double price, int quantity) {
+  public void registerAcquisition(String partnerID, String prodID, double price, int quantity) throws UnknownPartnerIDException{
     _warehouse.registerAcquisition(partnerID, prodID, price, quantity);
   }
 
@@ -113,7 +117,7 @@ public class WarehouseManager {
     return _warehouse.transIdExists(id);
   }
 
-  public String showTransaction(int id){
+  public String showTransaction(int id) throws UnknownTransactionIDException{
     return _warehouse.showTransaction(id);
   }
 
@@ -121,7 +125,7 @@ public class WarehouseManager {
     return _warehouse.lookupProductBatchesUnderGivenPrice(priceLimit);
   }
 
-  public String lookupPaymentsByPartner(String partnerID) {
+  public String lookupPaymentsByPartner(String partnerID) throws UnknownPartnerIDException{
     return _warehouse.lookupPaymentsByPartner(partnerID);
   }
 

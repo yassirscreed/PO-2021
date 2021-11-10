@@ -3,9 +3,9 @@ package ggc.app.transactions;
 import pt.tecnico.uilib.menus.Command;
 import pt.tecnico.uilib.menus.CommandException;
 import ggc.WarehouseManager;
+//FIXME import classes
 import ggc.app.exceptions.UnknownTransactionKeyException;
 import ggc.exceptions.UnknownTransactionIDException;
-//FIXME import classes
 
 /**
  * Show specific transaction.
@@ -21,11 +21,11 @@ public class DoShowTransaction extends Command<WarehouseManager> {
   @Override
   public final void execute() throws CommandException {
     //FIXME implement command
-    if (!_receiver.transIdExists(integerField("transactionID")))
-      throw new UnknownTransactionKeyException(integerField("transactionID"));
-    else
+    try {
       _display.add(_receiver.showTransaction(integerField("transactionID")));
-    _display.display();
+      _display.display();
+    } catch (UnknownTransactionIDException e) {
+      throw new UnknownTransactionKeyException(e.getKey());
+    }
   }
-  
 }

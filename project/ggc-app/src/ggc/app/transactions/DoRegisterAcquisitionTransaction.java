@@ -4,6 +4,8 @@ import pt.tecnico.uilib.menus.Command;
 import pt.tecnico.uilib.menus.CommandException;
 import ggc.WarehouseManager;
 //FIXME import classes
+import ggc.app.exceptions.UnknownPartnerKeyException;
+import ggc.exceptions.UnknownPartnerIDException;
 
 /**
  * Register order.
@@ -22,8 +24,11 @@ public class DoRegisterAcquisitionTransaction extends Command<WarehouseManager> 
   @Override
   public final void execute() throws CommandException {
     //FIXME implement command
-    
+    try {
       _receiver.registerAcquisition(stringField("partnerID"), stringField("prodID"), realField("price"), integerField("quantity"));
-    
+    } 
+    catch (UnknownPartnerIDException e){
+      throw new UnknownPartnerKeyException(e.getKey());
+    }
   }
 }

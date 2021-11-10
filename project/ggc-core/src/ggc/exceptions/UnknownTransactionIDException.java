@@ -1,6 +1,6 @@
 package ggc.exceptions;
 
-public class UnknownTransactionIDException {
+public class UnknownTransactionIDException extends Exception {
 
     private int _key;
 
