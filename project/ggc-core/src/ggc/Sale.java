@@ -3,8 +3,6 @@ package ggc;
 public class Sale extends Transaction {
 
     private int _deadline;
-    
-    private String _type = "Sale";
 
     private Double _payvalue;
 
@@ -26,10 +24,6 @@ public class Sale extends Transaction {
 
     public Double getPayModded() {
         return _payModded;
-    }
-    
-    public String getType(){
-        return _type;
     }
 
     public void setPayValue(Double value) {
