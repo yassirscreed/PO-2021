@@ -342,7 +342,7 @@ public class Warehouse implements Serializable {
     Batch _batch = getBatchByProductandPartner(partnerID, prodID);
     if (_batch.getQuantity() >= quantity) {
       Double payvalue = getBatchByProductandPartner(partnerID, prodID).getPrice() * quantity;
-      Sale sale = new Sale(_numtrans, partnerID, prodID, quantity, getDate(), payvalue, deadline);
+      Sale sale = new Sale(_numtrans, partnerID, prodID, quantity, getDate(),"Sale", payvalue, deadline);
       _batch.reduceQuantity(quantity);
       _transactions.put(_numtrans, sale);
       _numtrans += 1;
