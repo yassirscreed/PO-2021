@@ -44,7 +44,7 @@ public class WarehouseManager {
     return _warehouse.getCBalance();
   }
 
-  public void acquisitionBalance(double price){
+  public void acquisitionBalance(double price) {
     _warehouse.acquisitionBalance(price);
   }
 
@@ -58,7 +58,7 @@ public class WarehouseManager {
     return _warehouse.idExists(id);
   }
 
-  public String showPartner(String id) throws UnknownPartnerIDException{
+  public String showPartner(String id) throws UnknownPartnerIDException {
     return _warehouse.showPartner(id);
   }
 
@@ -89,7 +89,7 @@ public class WarehouseManager {
     return _warehouse.productExists(id);
   }
 
-  public String showPartnerAcquisitions(String partnerID) throws UnknownPartnerIDException{
+  public String showPartnerAcquisitions(String partnerID) throws UnknownPartnerIDException {
     return _warehouse.showPartnerAcquisitions(partnerID);
   }
 
@@ -113,27 +113,38 @@ public class WarehouseManager {
     return _warehouse.showBatchesByProduct(productID);
   }
 
-  public void registerAcquisition(String partnerID, String prodID, double price, int quantity) throws UnknownPartnerIDException{
+  public Batch getBatchByProductandPartner(String partnerID, String prodID) {
+    return _warehouse.getBatchByProductandPartner(partnerID, prodID);
+  }
+
+  public void registerAcquisition(String partnerID, String prodID, double price, int quantity)
+      throws UnknownPartnerIDException {
     _warehouse.registerAcquisition(partnerID, prodID, price, quantity);
   }
 
-  public void registerAcquisition(String partnerID, String prodID, double price, int quantity, double alpha, String Comps) throws UnknownPartnerIDException{
+  public void registerAcquisition(String partnerID, String prodID, double price, int quantity, double alpha,
+      String Comps) throws UnknownPartnerIDException {
     _warehouse.registerAcquisition(partnerID, prodID, price, quantity, alpha, Comps);
+  }
+
+  public void registerSale(String partnerID, String prodID, int deadline, int quantity)
+      throws UnavailableProductQuantityException {
+    _warehouse.registerSale(partnerID, prodID, deadline, quantity);
   }
 
   public Collection<Transaction> getTransactions() {
     return _warehouse.getTransactions();
   }
 
-  public String addRecipeCompToString(String prodID,int quantity){
+  public String addRecipeCompToString(String prodID, int quantity) {
     return _warehouse.addRecipeCompToString(prodID, quantity);
   }
-  
-   public boolean transIdExists(int id) {
+
+  public boolean transIdExists(int id) {
     return _warehouse.transIdExists(id);
   }
 
-  public String showTransaction(int id) throws UnknownTransactionIDException{
+  public String showTransaction(int id) throws UnknownTransactionIDException {
     return _warehouse.showTransaction(id);
   }
 
@@ -141,7 +152,7 @@ public class WarehouseManager {
     return _warehouse.lookupProductBatchesUnderGivenPrice(priceLimit);
   }
 
-  public String lookupPaymentsByPartner(String partnerID) throws UnknownPartnerIDException{
+  public String lookupPaymentsByPartner(String partnerID) throws UnknownPartnerIDException {
     return _warehouse.lookupPaymentsByPartner(partnerID);
   }
 

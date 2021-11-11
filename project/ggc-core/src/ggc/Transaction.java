@@ -9,6 +9,7 @@ public abstract class Transaction implements Serializable {
     private int _quantity;
     private int _paydate;
     private int _id;
+    private boolean _paid = false;
 
     Transaction(int id, String partnerID, String productID, int quantity, int paydate) {
         _id = id;
@@ -21,7 +22,7 @@ public abstract class Transaction implements Serializable {
     public int getQuantity() {
         return _quantity;
     }
-    
+
     public String getProductID() {
         return _productID;
     }
@@ -37,5 +38,14 @@ public abstract class Transaction implements Serializable {
     public int getPayDate() {
         return _paydate;
 
+    }
+
+    public boolean getPaidStatus() {
+        return _paid;
+    }
+
+    public void setPayDate(int date) {
+        _paydate = date;
+        _paid = true;
     }
 }
