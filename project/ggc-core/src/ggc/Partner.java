@@ -1,6 +1,7 @@
 package ggc;
 
 import java.io.Serializable;
+import java.lang.Math.*;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -16,7 +17,7 @@ public class Partner implements Serializable, ProductObserver {
 
     private int _points = 0;
     
-    private int _aquisitionValue = 0;
+    private double _aquisitionValue = 0;
 
     private NotificationDelivery _deliveryMode;
 
@@ -48,11 +49,11 @@ public class Partner implements Serializable, ProductObserver {
         return _points;
     }
 
-    public int getAquisitionValue(){
+    public double getAquisitionValue(){
         return _aquisitionValue;
     }
 
-    public void addAquisitionValue(int price){
+    public void addAquisitionValue(double price){
         _aquisitionValue += price;
     }
     
@@ -96,6 +97,6 @@ public class Partner implements Serializable, ProductObserver {
 
     public String toString() {
         return getId() + "|" + getName() + "|" + getAddress() + "|" + getStatus().getStatus() + "|" + getPoints() + "|"
-                + getAquisitionValue() + "|" + 0 + "|" + 0;
+                + (int)Math.round(getAquisitionValue()) + "|" + 0 + "|" + 0;
     }
 }

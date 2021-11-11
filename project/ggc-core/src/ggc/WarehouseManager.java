@@ -40,6 +40,14 @@ public class WarehouseManager {
     return _warehouse.getBalance();
   }
 
+  public double getCBalance() {
+    return _warehouse.getCBalance();
+  }
+
+  public void acquisitionBalance(double price){
+    _warehouse.acquisitionBalance(price);
+  }
+
   // Partner
 
   public void registerPartner(String id, String name, String address) throws DuplicatePartnerException {
@@ -109,8 +117,16 @@ public class WarehouseManager {
     _warehouse.registerAcquisition(partnerID, prodID, price, quantity);
   }
 
+  public void registerAcquisition(String partnerID, String prodID, double price, int quantity, double alpha, String Comps) throws UnknownPartnerIDException{
+    _warehouse.registerAcquisition(partnerID, prodID, price, quantity, alpha, Comps);
+  }
+
   public Collection<Transaction> getTransactions() {
     return _warehouse.getTransactions();
+  }
+
+  public String addRecipeCompToString(String prodID,int quantity){
+    return _warehouse.addRecipeCompToString(prodID, quantity);
   }
   
    public boolean transIdExists(int id) {

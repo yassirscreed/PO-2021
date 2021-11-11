@@ -37,6 +37,7 @@ public abstract class Product implements Serializable, ObserverSubject {
         return _maxprice;
     }
 
+
     @Override
     public String toString() {
         return getProdID() + "|" + Math.round(getPrice()) + "|" + getStockTotal(); // + "\n";

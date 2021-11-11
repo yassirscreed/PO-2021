@@ -1,17 +1,18 @@
 package ggc;
 
 import java.io.Serializable;
+import java.lang.Math.*;
 
 public class Acquisition extends Transaction{
 
-    private int _payvalue;
+    private double _payvalue;
 
-    public Acquisition(int id, String partnerID, String productID, int quantity, int paydate, int payvalue){
+    public Acquisition(int id, String partnerID, String productID, int quantity, int paydate, double payvalue){
         super(id, partnerID, productID, quantity, paydate);
         _payvalue = payvalue;
     }
 
-    public int getPayValue(){
+    public double getPayValue(){
         return _payvalue;
     }
 
@@ -21,6 +22,6 @@ public class Acquisition extends Transaction{
     
     @Override
     public String toString(){
-        return "COMPRA|" + getId() + "|" + getPartnerID() + "|" + getProductID() + "|" + getQuantity() + "|" + getPayValue() + "|" + getPayDate();
+        return "COMPRA|" + getId() + "|" + getPartnerID() + "|" + getProductID() + "|" + getQuantity() + "|" + (int)Math.round(getPayValue()) + "|" + getPayDate();
     }
 }

@@ -147,6 +147,15 @@ public class Warehouse implements Serializable {
     return _balance;
   }
 
+  public double getCBalance() {
+    return _balance;
+  }
+
+  public void acquisitionBalance(double price){
+    _balance -= price;
+  }
+
+
   // Partners and Batches
 
   /**
@@ -287,10 +296,12 @@ public class Warehouse implements Serializable {
 
   // Transactions
 
+  // For Simple Products
   public void registerAcquisition(String partnerID, String prodID, double price, int quantity) throws UnknownPartnerIDException{
     if (_partners.containsKey(partnerID)) {
-      int payvalue = (int) Math.round(price) * quantity;
-      Acquisition acquisition = new Acquisition(_numtrans, partnerID, prodID, quantity, _date, payvalue);
+      double payvalue = price * quantity;
+      acquisitionBalance(payvalue);
+      Acquisition acquisition = new Acquisition(_numtrans, partnerID, prodID, quantity, getDate(), payvalue);
       getPartner(partnerID).addAquisitionValue(payvalue);
       SimpleProduct product = new SimpleProduct(prodID, price, quantity);
       registerBatch(product, partnerID, quantity, price);
@@ -300,8 +311,28 @@ public class Warehouse implements Serializable {
         throw new UnknownPartnerIDException(partnerID);
   }
 
+  // For Derived Products 
+  public void registerAcquisition(String partnerID, String prodID, double price, int quantity, double alpha, String components) throws UnknownPartnerIDException{
+    if (_partners.containsKey(partnerID)) {
+      double payvalue = price * quantity;
+      acquisitionBalance(payvalue);
+      Acquisition acquisition = new Acquisition(_numtrans, partnerID, prodID, quantity, getDate(), payvalue);
+      getPartner(partnerID).addAquisitionValue(payvalue);
+      DerivedProduct product = new DerivedProduct(prodID, price, quantity, alpha, components);
+      product.insertHashMap(components);
+      registerBatch(product, partnerID, quantity, price);
+      _transactions.put(_numtrans, acquisition);
+      _numtrans += 1;
+      } else
+        throw new UnknownPartnerIDException(partnerID);
+  }
+
   public Collection<Transaction> getTransactions() {
     return Collections.unmodifiableCollection(_transactions.values());
+  }
+
+  public String addRecipeCompToString(String prodID,int quantity){
+    return prodID + ":" + quantity + "#";
   }
   
    /**
@@ -338,8 +369,10 @@ public class Warehouse implements Serializable {
     if (_partners.containsKey(partnerID)) {
       String s = "";
       for (Transaction trans : getTransactions()) {
-        if (trans.getPartnerID().equals(partnerID))
-          s += trans.toString() + "\n";
+        if (trans instanceof Buy){
+          if (trans.getPartnerID().equals(partnerID))
+              s += trans.toString() + "\n";
+        }
       }
       return s.replaceAll("[\n\r]$", "");
     } else
