@@ -16,7 +16,7 @@ class DoShowGlobalBalance extends Command<WarehouseManager> {
   @Override
   public final void execute() throws CommandException {
     // FIXME implement command
-    _display.addLine(Message.currentBalance(_receiver.getBalance(), 10.00));
+    _display.addLine(Message.currentBalance(_receiver.getBalance(),_receiver.getCBalance()));
     // Saldo contabilistico ainda por implementar
     _display.display();
   }
