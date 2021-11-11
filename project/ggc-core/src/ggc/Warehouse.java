@@ -350,7 +350,7 @@ public class Warehouse implements Serializable {
       throw new UnavailableProductQuantityException(prodID, quantity, _batch.getQuantity());
   }
   
-  public void registerBreakdown(String partnerID,String prodID,int quantity) throws UnknownPartnerIDException,UnknownProductIDException,UnavailableProductCoreException {
+  public void registerBreakdown(String partnerID,String prodID,int quantity) throws UnknownPartnerIDException,UnknownProductIDException,UnavailableProductQuantityException {
     if (_partners.containsKey(partnerID)){
       if (_products.containsKey(prodID)){
         int availableProducts = 0;
@@ -359,7 +359,7 @@ public class Warehouse implements Serializable {
             availableProducts += b.getQuantity();
         }
         if (availableProducts-quantity < 0)
-          throw new UnavailableProductCoreException(prodID,quantity,availableProducts);
+          throw new UnavailableProductQuantityException(prodID,quantity,availableProducts);
       } else
         throw new UnknownProductIDException(prodID);
 
