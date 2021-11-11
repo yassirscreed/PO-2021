@@ -12,7 +12,7 @@ public abstract class Transaction implements Serializable {
     private int _id;
     private boolean _paid = false;
 
-    Transaction(int id, String partnerID, String productID, int quantity, int paydate) {
+    Transaction(int id, String partnerID, String productID, int quantity, int paydate, String type) {
         _id = id;
         _partnerID = partnerID;
         _productID = productID;
