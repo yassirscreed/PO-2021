@@ -6,6 +6,7 @@ public abstract class Transaction implements Serializable {
     // ATRIBUTOS
     private String _partnerID;
     private String _productID;
+    private String _type;
     private int _quantity;
     private int _paydate;
     private int _id;
@@ -17,6 +18,7 @@ public abstract class Transaction implements Serializable {
         _productID = productID;
         _quantity = quantity;
         _paydate = paydate;
+        _type = type;
     }
 
     public int getQuantity() {
@@ -29,6 +31,10 @@ public abstract class Transaction implements Serializable {
 
     public String getPartnerID() {
         return _partnerID;
+    }
+    
+    public String getType(){
+        return _type;
     }
 
     public int getId() {
