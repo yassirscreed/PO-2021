@@ -131,6 +131,10 @@ public class WarehouseManager {
       throws UnavailableProductQuantityException {
     _warehouse.registerSale(partnerID, prodID, deadline, quantity);
   }
+  
+  public void registerBreakdown(String partnerID,String prodID,int quantity) throws UnknownPartnerIDException,UnknownProductIDException,UnavailableProductCoreException {
+    _warehouse.registerBreakdown(partnerID, prodID, quantity);
+  }
 
   public Collection<Transaction> getTransactions() {
     return _warehouse.getTransactions();
