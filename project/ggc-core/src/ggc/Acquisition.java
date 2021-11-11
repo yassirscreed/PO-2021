@@ -23,6 +23,6 @@ public class Acquisition extends Transaction{
     
     @Override
     public String toString(){
-        return "COMPRA|" + getId() + "|" + getPartnerID() + "|" + getProductID() + "|" + getQuantity() + "|" + (int)Math.round(getPayValue()) + "|" + getDate();
+        return "COMPRA|" + getId() + "|" + getPartnerID() + "|" + getProductID() + "|" + getQuantity() + "|" + (int)Math.round(getPayValue()) + "|" + getPayDate();
     }
 }
