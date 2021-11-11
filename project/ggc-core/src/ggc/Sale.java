@@ -9,7 +9,7 @@ public class Sale extends Transaction {
     private Double _payModded = _payvalue;
 
     public Sale(int id, String partnerID, String productID, int quantity, int paydate, String type, Double payvalue, int deadline) {
-        super(id, partnerID, productID, quantity, paydate);
+        super(id, partnerID, productID, quantity, paydate, type);
         _payvalue = payvalue;
         _deadline = deadline;
     }
