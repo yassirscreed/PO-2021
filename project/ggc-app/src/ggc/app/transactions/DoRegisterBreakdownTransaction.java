@@ -9,7 +9,7 @@ import ggc.exceptions.UnknownPartnerIDException;
 import ggc.app.exceptions.UnknownProductKeyException;
 import ggc.exceptions.UnknownProductIDException;
 import ggc.app.exceptions.UnavailableProductException;
-import ggc.exceptions.UnavailableProductCoreException;
+import ggc.exceptions.UnavailableProductQuantityException;
 import pt.tecnico.uilib.forms.*;
 
 /**
@@ -37,8 +37,8 @@ public class DoRegisterBreakdownTransaction extends Command<WarehouseManager> {
       throw new UnknownPartnerKeyException(e.getKey());
     } catch (UnknownProductIDException e){
       throw new UnknownProductKeyException(e.getKey());
-    } catch (UnavailableProductCoreException e){
-      throw new UnavailableProductException(e.getKey(), e.getRequested(), e.getAvailable());
+    } catch (UnavailableProductQuantityException e){
+      throw new UnavailableProductException(e.getID(), e.getRequested(), e.getAvailable());
     }
 
   }
