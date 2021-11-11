@@ -6,6 +6,7 @@ import ggc.WarehouseManager;
 //FIXME import classes
 import ggc.app.exceptions.UnknownPartnerKeyException;
 import ggc.exceptions.UnknownPartnerIDException;
+import pt.tecnico.uilib.forms.*;
 
 /**
  * Register order.
@@ -24,8 +25,28 @@ public class DoRegisterAcquisitionTransaction extends Command<WarehouseManager> 
   @Override
   public final void execute() throws CommandException {
     //FIXME implement command
+    String partnerID = stringField("partnerID");
+    String prodID = stringField("prodID");
+    double price = realField("price");
+    int quantity = integerField("quantity");
     try {
-      _receiver.registerAcquisition(stringField("partnerID"), stringField("prodID"), realField("price"), integerField("quantity"));
+      if(!_receiver.productExists(prodID)){
+        String haveRecipe = Form.requestString(Prompt.addRecipe());
+        if (haveRecipe.equals("yes")|haveRecipe.equals("s")){
+          int numComps = Form.requestInteger(Prompt.numberOfComponents());
+          double alpha = Form.requestReal(Prompt.alpha());
+          String comps = "";
+          for(int i = numComps; i > 0; i--){
+            String prodID2 = Form.requestString(Prompt.productKey());
+            int amount = Form.requestInteger(Prompt.amount());
+            comps += _receiver.addRecipeCompToString(prodID2,amount);
+          }
+          comps = comps.substring(0, comps.length() - 1);
+          _receiver.registerAcquisition(partnerID, prodID, price, quantity, alpha, comps);
+        } else{
+        _receiver.registerAcquisition(partnerID, prodID, price,  quantity);}
+      } else{
+      _receiver.registerAcquisition(partnerID, prodID, price,  quantity);}
     } 
     catch (UnknownPartnerIDException e){
       throw new UnknownPartnerKeyException(e.getKey());
