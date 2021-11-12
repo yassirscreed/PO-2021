@@ -10,6 +10,7 @@ public abstract class Product implements Serializable, ObserverSubject {
     private int _stocktotal;
     private Double _maxprice;
     private ArrayList<ProductObserver> _observers = new ArrayList<ProductObserver>();
+    private NotificationDelivery _send = new DeliveryMode();
 
     public Product(String id, Double maxprice, int stock) {
         _prodID = id;
@@ -37,7 +38,6 @@ public abstract class Product implements Serializable, ObserverSubject {
         return _maxprice;
     }
 
-
     @Override
     public String toString() {
         return getProdID() + "|" + Math.round(getPrice()) + "|" + getStockTotal(); // + "\n";
@@ -64,9 +64,16 @@ public abstract class Product implements Serializable, ObserverSubject {
     }
 
     @Override
-    public void notifyObservers(String occasion) {
+    public void notifyBargain(int price) {
         for (ProductObserver observer : _observers) {
-            observer.update(occasion, _prodID, _maxprice);
+            observer.updateBargain(_prodID, price, _send);
+        }
+    }
+
+    @Override
+    public void notifyNew(int price) {
+        for (ProductObserver observer : _observers) {
+            observer.updateNew(_prodID, price, _send);
         }
     }
 

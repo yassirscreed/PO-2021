@@ -3,6 +3,7 @@ package ggc.app.partners;
 import pt.tecnico.uilib.menus.Command;
 import pt.tecnico.uilib.menus.CommandException;
 import ggc.WarehouseManager;
+import ggc.app.exceptions.UnknownPartnerKeyException;
 //FIXME import classes
 import ggc.app.exceptions.UnknownPartnerKeyException;
 import ggc.exceptions.UnknownPartnerIDException;
@@ -24,7 +25,7 @@ class DoShowPartner extends Command<WarehouseManager> {
     try {
       _display.add(_receiver.showPartner(stringField("id")));
       _display.display();
-    } catch (UnknownPartnerIDException e){
+    } catch (UnknownPartnerIDException e) {
       throw new UnknownPartnerKeyException(e.getKey());
     }
   }

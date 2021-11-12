@@ -8,14 +8,14 @@ public class Notification implements Serializable {
 
     private String _pID;
 
-    private Double _pPrice;
+    private int _price;
 
     private String _deliveryMode;
 
-    public Notification(String occasion, String pID, Double pPrice, String deliveryMode) {
+    public Notification(String occasion, String pID, int price, String deliveryMode) {
         _occasion = occasion;
         _pID = pID;
-        _pPrice = pPrice;
+        _price = price;
         _deliveryMode = deliveryMode;
     }
 
@@ -27,16 +27,20 @@ public class Notification implements Serializable {
         return _pID;
     }
 
-    public Double getpPrice() {
-        return _pPrice;
+    public int getPrice() {
+        return _price;
     }
 
     public String getDeliveryMode() {
         return _deliveryMode;
     }
 
+    public String getString() {
+        return getOccasion() + "|" + getpID() + "|" + getPrice();
+    }
+
     public String ToString() {
-        return getDeliveryMode() + getOccasion() + "|" + getpID() + "|" + getpPrice();
+        return getDeliveryMode() + getOccasion() + "|" + getpID() + "|" + getPrice();
     }
 
 }

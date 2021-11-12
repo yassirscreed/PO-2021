@@ -19,13 +19,17 @@ public interface ObserverSubject extends Serializable {
     public void removeObserver(ProductObserver o);
 
     /**
-     * Wipes all notications public void wipeNotifications();
-     */
-
-    /**
-     * Notify all Observers about the Product occasion (BARGAIN or NEW)
+     * Notify all Observers about the Product occasion (BARGAIN)
      * 
      * @param occasion
      */
-    public void notifyObservers(String occasion);
+    public void notifyBargain(int price);
+
+    /**
+     * Notify all Observers about the Product occasion (New)
+     * 
+     * @param occasion
+     */
+    public void notifyNew(int price);
+
 }

@@ -43,6 +43,10 @@ public class Batch implements Serializable {
         return _price;
     }
 
+    public int getPriceInt() {
+        return (int) Math.round(getPrice());
+    }
+
     @Override
     public String toString() {
         return _product.getProdID() + "|" + getPartnerID() + "|" + Math.round(getPrice()) + "|" + getQuantity(); // +

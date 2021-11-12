@@ -73,11 +73,14 @@ public class Warehouse implements Serializable {
     if (partner != null) {
       throw new DuplicatePartnerException(id);
     }
-
     Partner partner2 = new Partner(id, name, address);
+    addPartnerNotifications(partner2);
     _partners.put(id, partner2);
-    for (Product product : _products.values()) {
-      product.registerObserver(partner2);
+  }
+
+  public void addPartnerNotifications(Partner p) {
+    for (Map.Entry<String, Product> entry : _products.entrySet()) {
+      entry.getValue().registerObserver(p);
     }
   }
 
@@ -115,12 +118,10 @@ public class Warehouse implements Serializable {
 
       s += partner.toString();
 
-      for (Notification n : partner.getPartnerNotifications()) {
-        s += "\n" + n.toString();
+      for (var n : partner.getPartnerNotifications()) {
+        s += "\n" + n.getString();
       }
-
       partner.wipeNotifications();
-
       return s;
     } else
       throw new UnknownPartnerIDException(id);
@@ -136,7 +137,15 @@ public class Warehouse implements Serializable {
 
   public void toggleNotifications(String partnerID, String prodID)
       throws UnknownPartnerIDException, UnknownProductIDException {
-    _products.get(prodID).toggleNotifications(_partners.get(partnerID));
+    if (_products.get(prodID) != null) {
+      if (_partners.get(partnerID) != null) {
+        _products.get(prodID).toggleNotifications(_partners.get(partnerID));
+      } else {
+        throw new UnknownPartnerIDException(partnerID);
+      }
+    } else {
+      throw new UnknownProductIDException(prodID);
+    }
   }
 
   // Balance
@@ -220,6 +229,12 @@ public class Warehouse implements Serializable {
     return Collections.unmodifiableCollection(_products.values());
   }
 
+  public void addProductNotifications(Product p) {
+    for (Map.Entry<String, Partner> entry : _partners.entrySet()) {
+      p.registerObserver(entry.getValue());
+    }
+  }
+
   /**
    * Registers a new Batch
    * 
@@ -293,6 +308,30 @@ public class Warehouse implements Serializable {
       throw new UnknownProductIDException(productID);
   }
 
+  public List<Batch> getBatchesByProduct(String productID) {
+    List<Batch> _BatchProductSort = new ArrayList<Batch>();
+    for (Batch e : _batches) {
+      if (e.getProd().getProdID().equals(productID)) {
+        _BatchProductSort.add(e);
+      }
+    }
+    return _BatchProductSort;
+  }
+
+  public Boolean checkforBargain(Batch batch, List<Batch> BatchProduct) {
+    boolean check = false;
+    int price = (int) Math.round(batch.getPrice());
+    for (Batch e : BatchProduct) {
+      if (price < (int) Math.round(e.getPrice())) {
+        check = true;
+      } /*
+         * else { check = false; break; }
+         */
+
+    }
+    return check;
+  }
+
   public Batch getBatchByProductandPartner(String partnerID, String prodID) {
     int index = 0;
     for (int i = 0; i < _batches.size(); i++) {
@@ -310,10 +349,16 @@ public class Warehouse implements Serializable {
     if (_partners.containsKey(partnerID)) {
       double payvalue = price * quantity;
       acquisitionBalance(payvalue);
-      Acquisition acquisition = new Acquisition(_numtrans, partnerID, prodID, quantity, getDate(), "Acquisition", payvalue);
+      Acquisition acquisition = new Acquisition(_numtrans, partnerID, prodID, quantity, getDate(), "Acquisition",
+          payvalue);
       getPartner(partnerID).addAquisitionValue(payvalue);
       SimpleProduct product = new SimpleProduct(prodID, price, quantity);
+      Batch batch = new Batch(product, partnerID, quantity, price);
       registerBatch(product, partnerID, quantity, price);
+      if (checkforBargain(batch, getBatchesByProduct(prodID))) {
+        // _partners.get(partnerID).updateBargain(prodID, );
+        _products.get(prodID).notifyBargain((int) Math.round(price));
+      }
       _transactions.put(_numtrans, acquisition);
       _numtrans += 1;
     } else
@@ -326,7 +371,8 @@ public class Warehouse implements Serializable {
     if (_partners.containsKey(partnerID)) {
       double payvalue = price * quantity;
       acquisitionBalance(payvalue);
-      Acquisition acquisition = new Acquisition(_numtrans, partnerID, prodID, quantity, getDate(), "Acquisition", payvalue);
+      Acquisition acquisition = new Acquisition(_numtrans, partnerID, prodID, quantity, getDate(), "Acquisition",
+          payvalue);
       getPartner(partnerID).addAquisitionValue(payvalue);
       DerivedProduct product = new DerivedProduct(prodID, price, quantity, alpha, components);
       product.insertHashMap(components);
@@ -342,24 +388,25 @@ public class Warehouse implements Serializable {
     Batch _batch = getBatchByProductandPartner(partnerID, prodID);
     if (_batch.getQuantity() >= quantity) {
       Double payvalue = getBatchByProductandPartner(partnerID, prodID).getPrice() * quantity;
-      Sale sale = new Sale(_numtrans, partnerID, prodID, quantity, getDate(),"Sale", payvalue, deadline);
+      Sale sale = new Sale(_numtrans, partnerID, prodID, quantity, getDate(), "Sale", payvalue, deadline);
       _batch.reduceQuantity(quantity);
       _transactions.put(_numtrans, sale);
       _numtrans += 1;
     } else
       throw new UnavailableProductQuantityException(prodID, quantity, _batch.getQuantity());
   }
-  
-  public void registerBreakdown(String partnerID,String prodID,int quantity) throws UnknownPartnerIDException,UnknownProductIDException,UnavailableProductQuantityException {
-    if (_partners.containsKey(partnerID)){
-      if (_products.containsKey(prodID)){
+
+  public void registerBreakdown(String partnerID, String prodID, int quantity)
+      throws UnknownPartnerIDException, UnknownProductIDException, UnavailableProductQuantityException {
+    if (_partners.containsKey(partnerID)) {
+      if (_products.containsKey(prodID)) {
         int availableProducts = 0;
-        for(Batch b : _batches){
+        for (Batch b : _batches) {
           if (b.getProd().getProdID().equals(prodID))
             availableProducts += b.getQuantity();
         }
-        if (availableProducts-quantity < 0)
-          throw new UnavailableProductQuantityException(prodID,quantity,availableProducts);
+        if (availableProducts - quantity < 0)
+          throw new UnavailableProductQuantityException(prodID, quantity, availableProducts);
       } else
         throw new UnknownProductIDException(prodID);
 
@@ -461,6 +508,7 @@ public class Warehouse implements Serializable {
       Double price = Double.parseDouble(fields[3]);
       int quantity = Integer.parseInt(fields[4]);
       SimpleProduct prod = new SimpleProduct(prodID, price, quantity);
+      addProductNotifications(prod);
       registerBatch(prod, fields[2], quantity, price);
 
     } else if (batch_mPattern.matcher(fields[0]).matches()) {
@@ -470,6 +518,7 @@ public class Warehouse implements Serializable {
       Double agravamento = Double.parseDouble(fields[5]);
       String receita = fields[6];
       DerivedProduct prod = new DerivedProduct(prodID, price, quantity, agravamento, receita);
+      addProductNotifications(prod);
       registerBatch(prod, fields[2], quantity, price);
 
     } else
