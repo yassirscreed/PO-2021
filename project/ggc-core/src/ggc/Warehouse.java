@@ -20,7 +20,7 @@ public class Warehouse implements Serializable {
   /** Serial number for serialization. */
   private static final long serialVersionUID = 202109192006L;
 
-  /** Date. */
+  /** Warehouse Date. */
   private int _date = 0;
 
   /** Balance of warehouse. */
@@ -164,6 +164,24 @@ public class Warehouse implements Serializable {
     _balance -= price;
   }
 
+  public void addSaleBalance(double price){
+    _balance += price;
+  }
+
+  public void receivePayment(int transID) throws UnknownTransactionIDException {
+    if (_transactions.containsKey(transID)) {
+      if (_transactions.get(transID).getType().equals("Sale")){
+        Transaction trans = _transactions.get(transID);
+        Sale sale = (Sale) trans;
+        if (sale.getPaidStatus() == false){
+          sale.itsPaid();
+          addSaleBalance(sale.getPayValue());
+        }
+      }
+    } else
+      throw new UnknownTransactionIDException(transID);
+  }
+
   // Partners and Batches
 
   /**
@@ -212,6 +230,21 @@ public class Warehouse implements Serializable {
       ArrayList<Integer> _Transactions = new ArrayList<Integer>(_transactions.keySet());
       for (int transID : _Transactions) {
         if (_transactions.get(transID).getType().equals("Acquisition")) {
+          if (_transactions.get(transID).getPartnerID().equals(partnerID))
+            s += _transactions.get(transID).toString() + "\n";
+        }
+      }
+      return s.replaceAll("[\n\r]$", "");
+    } else
+      throw new UnknownPartnerIDException(partnerID);
+  }
+
+  public String showPartnerSales(String partnerID) throws UnknownPartnerIDException {
+    if (_partners.containsKey(partnerID)) {
+      String s = "";
+      ArrayList<Integer> _Transactions = new ArrayList<Integer>(_transactions.keySet());
+      for (int transID : _Transactions) {
+        if (_transactions.get(transID).getType().equals("Sale")) {
           if (_transactions.get(transID).getPartnerID().equals(partnerID))
             s += _transactions.get(transID).toString() + "\n";
         }
@@ -324,10 +357,8 @@ public class Warehouse implements Serializable {
     for (Batch e : BatchProduct) {
       if (price < (int) Math.round(e.getPrice())) {
         check = true;
-      } /*
-         * else { check = false; break; }
-         */
-
+      } 
+        else { check = false; break; }
     }
     return check;
   }

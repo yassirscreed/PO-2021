@@ -26,9 +26,11 @@ public class Sale extends Transaction {
         return _payModded;
     }
 
+
     public void setPayValue(Double value) {
         _payvalue = value;
     }
+
 
     public void pay(int value) {
         _payModded -= value;

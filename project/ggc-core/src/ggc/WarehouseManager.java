@@ -48,6 +48,14 @@ public class WarehouseManager {
     _warehouse.acquisitionBalance(price);
   }
 
+  public void addSaleBalance(double price){
+    _warehouse.addSaleBalance(price);
+  }
+
+  public void receivePayment(int transID) throws UnknownTransactionIDException {
+    _warehouse.receivePayment(transID);
+  }
+
   // Partner
 
   public void registerPartner(String id, String name, String address) throws DuplicatePartnerException {
@@ -91,6 +99,10 @@ public class WarehouseManager {
 
   public String showPartnerAcquisitions(String partnerID) throws UnknownPartnerIDException {
     return _warehouse.showPartnerAcquisitions(partnerID);
+  }
+
+  public String showPartnerSales(String partnerID) throws UnknownPartnerIDException {
+    return _warehouse.showPartnerSales(partnerID);
   }
 
   public Collection<Product> getProducts() {

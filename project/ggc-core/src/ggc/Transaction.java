@@ -50,6 +50,10 @@ public abstract class Transaction implements Serializable {
         return _paid;
     }
 
+    public void itsPaid(){
+        _paid = true;
+    }
+
     public void setPayDate(int date) {
         _paydate = date;
         _paid = true;
