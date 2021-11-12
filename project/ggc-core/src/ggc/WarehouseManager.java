@@ -113,8 +113,12 @@ public class WarehouseManager {
     return _warehouse.showBatchesByProduct(productID);
   }
 
-  public Batch getBatchByProductandPartner(String partnerID, String prodID) {
+  /*public Batch getBatchByProductandPartner(String partnerID, String prodID) {
     return _warehouse.getBatchByProductandPartner(partnerID, prodID);
+  }*/
+  
+  public Batch getCheaperBatch(String prodID){
+    return _warehouse.getCheaperBatch(prodID);
   }
 
   public void registerAcquisition(String partnerID, String prodID, double price, int quantity)
