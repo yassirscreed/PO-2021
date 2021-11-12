@@ -332,13 +332,23 @@ public class Warehouse implements Serializable {
     return check;
   }
 
-  public Batch getBatchByProductandPartner(String partnerID, String prodID) {
+  /*public Batch getBatchByProductandPartner(String partnerID, String prodID) {
     int index = 0;
     for (int i = 0; i < _batches.size(); i++) {
       if ((_batches.get(i).getPartnerID().equals(partnerID)) && (_batches.get(i).getProd().getProdID().equals(prodID)))
         index = i;
     }
     return _batches.get(index);
+  }*/
+  
+  public Batch getCheaperBatch(String prodID){
+    Batch _lowerbatch = _batches.get(0);
+    for(Batch _batch : _batches){
+      if (_batch.getPrice() < _lowerbatch.getPrice()){
+        _lowerbatch = _batch;
+      } 
+    }
+    return _lowerbatch;
   }
 
   // Transactions
@@ -383,17 +393,29 @@ public class Warehouse implements Serializable {
       throw new UnknownPartnerIDException(partnerID);
   }
 
-  public void registerSale(String partnerID, String prodID, int deadline, int quantity)
-      throws UnavailableProductQuantityException {
-    Batch _batch = getBatchByProductandPartner(partnerID, prodID);
-    if (_batch.getQuantity() >= quantity) {
-      Double payvalue = getBatchByProductandPartner(partnerID, prodID).getPrice() * quantity;
-      Sale sale = new Sale(_numtrans, partnerID, prodID, quantity, getDate(), "Sale", payvalue, deadline);
-      _batch.reduceQuantity(quantity);
+  public void registerSale(String partnerID, String prodID, int deadline, int quantity) throws UnavailableProductQuantityException {
+    if (_products.get(prodID).getStockTotal() >= quantity) {
+      int i = quantity;
+      double price = 0;
+      while(i > 0){
+        Batch batch = getCheaperBatch(prodID);
+        if (batch.getQuantity() > i){
+          batch.reduceQuantity(i);
+          price += i*batch.getPrice();
+          i = 0;
+        } else{ // quantidade do batch for <=
+          int batchquantity = batch.getQuantity();
+          price += batchquantity*batch.getPrice();
+          i -= batchquantity;
+          _batches.remove(batch);
+        }
+      }
+      _products.get(prodID).addStock(-quantity);
+      Sale sale = new Sale(_numtrans, partnerID, prodID, quantity, getDate(),"Sale", price, deadline);
       _transactions.put(_numtrans, sale);
       _numtrans += 1;
     } else
-      throw new UnavailableProductQuantityException(prodID, quantity, _batch.getQuantity());
+      throw new UnavailableProductQuantityException(prodID, quantity, _products.get(prodID).getStockTotal());
   }
 
   public void registerBreakdown(String partnerID, String prodID, int quantity)
