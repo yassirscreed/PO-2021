@@ -78,6 +78,11 @@ public class Warehouse implements Serializable {
     _partners.put(id, partner2);
   }
 
+  /**
+   * Adds a new Partner to product notifications (observer)
+   * 
+   * @param p
+   */
   public void addPartnerNotifications(Partner p) {
     for (Map.Entry<String, Product> entry : _products.entrySet()) {
       entry.getValue().registerObserver(p);
@@ -135,6 +140,14 @@ public class Warehouse implements Serializable {
     return Collections.unmodifiableCollection(_partners.values());
   }
 
+  /**
+   * Toggles notifications (on/off) for a specific partner and product
+   * 
+   * @param partnerID
+   * @param prodID
+   * @throws UnknownPartnerIDException
+   * @throws UnknownProductIDException
+   */
   public void toggleNotifications(String partnerID, String prodID)
       throws UnknownPartnerIDException, UnknownProductIDException {
     if (_products.get(prodID) != null) {
@@ -156,24 +169,33 @@ public class Warehouse implements Serializable {
     return _balance;
   }
 
+  /* Returns Warehouse Balance */
   public double getCBalance() {
     return _balance;
   }
 
+  /* Reduces Warehouse balance with the acquisition price */
   public void acquisitionBalance(double price) {
     _balance -= price;
   }
 
-  public void addSaleBalance(double price){
+  /* Adds Warehouse balance with the sale price */
+  public void addSaleBalance(double price) {
     _balance += price;
   }
 
+  /**
+   * Registers payment for a specific Transaction
+   * 
+   * @param transID
+   * @throws UnknownTransactionIDException
+   */
   public void receivePayment(int transID) throws UnknownTransactionIDException {
     if (_transactions.containsKey(transID)) {
-      if (_transactions.get(transID).getType().equals("Sale")){
+      if (_transactions.get(transID).getType().equals("Sale")) {
         Transaction trans = _transactions.get(transID);
         Sale sale = (Sale) trans;
-        if (sale.getPaidStatus() == false){
+        if (sale.getPaidStatus() == false) {
           sale.itsPaid();
           addSaleBalance(sale.getPayValue());
         }
@@ -220,10 +242,18 @@ public class Warehouse implements Serializable {
     return _products.get(id);
   }
 
+  // Checks if product exists
   public boolean productExists(String id) {
     return _products.containsKey(id);
   }
 
+  /**
+   * Shows Partner Acquisitions
+   * 
+   * @param partnerID
+   * @return
+   * @throws UnknownPartnerIDException
+   */
   public String showPartnerAcquisitions(String partnerID) throws UnknownPartnerIDException {
     if (_partners.containsKey(partnerID)) {
       String s = "";
@@ -239,6 +269,13 @@ public class Warehouse implements Serializable {
       throw new UnknownPartnerIDException(partnerID);
   }
 
+  /**
+   * Shows Partner Sales
+   * 
+   * @param partnerID
+   * @return
+   * @throws UnknownPartnerIDException
+   */
   public String showPartnerSales(String partnerID) throws UnknownPartnerIDException {
     if (_partners.containsKey(partnerID)) {
       String s = "";
@@ -262,6 +299,11 @@ public class Warehouse implements Serializable {
     return Collections.unmodifiableCollection(_products.values());
   }
 
+  /**
+   * Adds a new product to Partner notifications
+   * 
+   * @param p
+   */
   public void addProductNotifications(Product p) {
     for (Map.Entry<String, Partner> entry : _partners.entrySet()) {
       p.registerObserver(entry.getValue());
@@ -307,6 +349,13 @@ public class Warehouse implements Serializable {
     return s.replaceAll("[\n\r]$", "");
   }
 
+  /**
+   * Shows all Batches by a Partner
+   * 
+   * @param partnerID
+   * @return
+   * @throws UnknownPartnerIDException
+   */
   public String showBatchesByPartner(String partnerID) throws UnknownPartnerIDException {
     if (_partners.containsKey(partnerID)) {
       String s = "";
@@ -324,6 +373,13 @@ public class Warehouse implements Serializable {
       throw new UnknownPartnerIDException(partnerID);
   }
 
+  /**
+   * Shows all Batches by a Product
+   * 
+   * @param productID
+   * @return
+   * @throws UnknownProductIDException
+   */
   public String showBatchesByProduct(String productID) throws UnknownProductIDException {
     if (_products.containsKey(productID)) {
       String s = "";
@@ -341,6 +397,12 @@ public class Warehouse implements Serializable {
       throw new UnknownProductIDException(productID);
   }
 
+  /**
+   * Returns all Batches by a product
+   * 
+   * @param productID
+   * @return
+   */
   public List<Batch> getBatchesByProduct(String productID) {
     List<Batch> _BatchProductSort = new ArrayList<Batch>();
     for (Batch e : _batches) {
@@ -351,33 +413,39 @@ public class Warehouse implements Serializable {
     return _BatchProductSort;
   }
 
+  /**
+   * Checks if new batch is eligible for Bargain notification
+   * 
+   * @param batch
+   * @param BatchProduct
+   * @return
+   */
   public Boolean checkforBargain(Batch batch, List<Batch> BatchProduct) {
     boolean check = false;
     int price = (int) Math.round(batch.getPrice());
     for (Batch e : BatchProduct) {
-      if (price < (int) Math.round(e.getPrice())) {
+      if ((int) Math.round(e.getPrice()) < price) {
+        check = false;
+        break;
+      } else {
         check = true;
-      } 
-        else { check = false; break; }
+      }
     }
     return check;
   }
 
-  /*public Batch getBatchByProductandPartner(String partnerID, String prodID) {
-    int index = 0;
-    for (int i = 0; i < _batches.size(); i++) {
-      if ((_batches.get(i).getPartnerID().equals(partnerID)) && (_batches.get(i).getProd().getProdID().equals(prodID)))
-        index = i;
-    }
-    return _batches.get(index);
-  }*/
-  
-  public Batch getCheaperBatch(String prodID){
+  /**
+   * Returns a the cheaper Batch for the product
+   * 
+   * @param prodID
+   * @return
+   */
+  public Batch getCheaperBatch(String prodID) {
     Batch _lowerbatch = _batches.get(0);
-    for(Batch _batch : _batches){
-      if (_batch.getPrice() < _lowerbatch.getPrice()){
+    for (Batch _batch : _batches) {
+      if (_batch.getPrice() < _lowerbatch.getPrice()) {
         _lowerbatch = _batch;
-      } 
+      }
     }
     return _lowerbatch;
   }
@@ -424,31 +492,34 @@ public class Warehouse implements Serializable {
       throw new UnknownPartnerIDException(partnerID);
   }
 
-  public void registerSale(String partnerID, String prodID, int deadline, int quantity) throws UnavailableProductQuantityException {
+  // Registers a Sale Transaction
+  public void registerSale(String partnerID, String prodID, int deadline, int quantity)
+      throws UnavailableProductQuantityException {
     if (_products.get(prodID).getStockTotal() >= quantity) {
       int i = quantity;
       double price = 0;
-      while(i > 0){
+      while (i > 0) {
         Batch batch = getCheaperBatch(prodID);
-        if (batch.getQuantity() > i){
+        if (batch.getQuantity() > i) {
           batch.reduceQuantity(i);
-          price += i*batch.getPrice();
+          price += i * batch.getPrice();
           i = 0;
-        } else{ // quantidade do batch for <=
+        } else { // quantidade do batch for <=
           int batchquantity = batch.getQuantity();
-          price += batchquantity*batch.getPrice();
+          price += batchquantity * batch.getPrice();
           i -= batchquantity;
           _batches.remove(batch);
         }
       }
       _products.get(prodID).addStock(-quantity);
-      Sale sale = new Sale(_numtrans, partnerID, prodID, quantity, getDate(),"Sale", price, deadline);
+      Sale sale = new Sale(_numtrans, partnerID, prodID, quantity, getDate(), "Sale", price, deadline);
       _transactions.put(_numtrans, sale);
       _numtrans += 1;
     } else
       throw new UnavailableProductQuantityException(prodID, quantity, _products.get(prodID).getStockTotal());
   }
 
+  // Registers a Breakdown Transaction
   public void registerBreakdown(String partnerID, String prodID, int quantity)
       throws UnknownPartnerIDException, UnknownProductIDException, UnavailableProductQuantityException {
     if (_partners.containsKey(partnerID)) {
@@ -467,10 +538,12 @@ public class Warehouse implements Serializable {
       throw new UnknownPartnerIDException(partnerID);
   }
 
+  /* Returns a Collection containing Transaction information */
   public Collection<Transaction> getTransactions() {
     return Collections.unmodifiableCollection(_transactions.values());
   }
 
+  // Adds a recipe to String
   public String addRecipeCompToString(String prodID, int quantity) {
     return prodID + ":" + quantity + "#";
   }
@@ -486,6 +559,13 @@ public class Warehouse implements Serializable {
     return _transactions.containsKey(id);
   }
 
+  /**
+   * Shows the Transaction id information
+   * 
+   * @param id
+   * @return
+   * @throws UnknownTransactionIDException
+   */
   public String showTransaction(int id) throws UnknownTransactionIDException {
     if (_transactions.containsKey(id)) {
       return _transactions.get(id).toString();
@@ -495,6 +575,12 @@ public class Warehouse implements Serializable {
 
   // Lookups
 
+  /**
+   * Returns all Batches under a given price
+   * 
+   * @param priceLimit
+   * @return
+   */
   public String lookupProductBatchesUnderGivenPrice(double priceLimit) {
     String s = "";
     for (Batch e : _batches) {
@@ -504,6 +590,13 @@ public class Warehouse implements Serializable {
     return s.replaceAll("[\n\r]$", "");
   }
 
+  /**
+   * Returns all payments made by a Partner
+   * 
+   * @param partnerID
+   * @return
+   * @throws UnknownPartnerIDException
+   */
   public String lookupPaymentsByPartner(String partnerID) throws UnknownPartnerIDException {
     if (_partners.containsKey(partnerID)) {
       String s = "";
